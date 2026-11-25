@@ -1,4 +1,5 @@
 // Edge-safe access-token helpers (used by middleware and server code).
+import { NextResponse } from "next/server";
 import { SignJWT, jwtVerify } from "jose";
 
 /** Short-lived JWT sent with every request. */
@@ -41,4 +42,13 @@ export async function verifyAccess(token?: string): Promise<AccessPayload | null
   } catch {
     return null;
   }
+}
+
+/**
+ * Same-origin redirect with a relative Location header. Behind Nginx the standalone
+ * server sees its own bind address (0.0.0.0:3000) as the origin, so absolute
+ * redirects built from req.url would send the browser there.
+ */
+export function redirectTo(path: string) {
+  return new NextResponse(null, { status: 307, headers: { Location: path } });
 }

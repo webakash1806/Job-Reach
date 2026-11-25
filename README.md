@@ -42,38 +42,49 @@ This starts `web` on port 3000 and `worker` next to it. Both use `.env`. Put a r
 
 ### VPS + Nginx + domain + SSL (Ubuntu/Debian)
 
-1. **DNS**: at your domain registrar, add an `A` record for `example.com` (or `app.example.com`) pointing to the VPS IP. Wait until `ping example.com` shows that IP.
-2. **Install** (on the VPS, as a sudo user):
+Works alongside a site already hosted on the same VPS: Nginx routes by domain name, so each site gets its own `server_name` and its own cert.
+
+0. **Check what is already there** (don't break the existing site):
+   ```bash
+   ls /etc/nginx/sites-enabled/        # existing site configs - leave them alone
+   sudo ss -tlnp | grep -E ':80|:443|:3000'   # who owns 80/443, and is 3000 free?
+   which docker nginx certbot          # skip installing what already exists
+   ```
+   If 80/443 are owned by something other than Nginx (Apache, Caddy, a Docker container), add this app to *that* proxy instead of installing Nginx.
+   If port 3000 is taken, set `PORT=3001` in `.env` and use `3001` in `nginx.conf`.
+1. **DNS**: use a different domain or a subdomain from the existing site, e.g. `jobs.example.com`. Add an `A` record for it pointing to the VPS IP. Wait until `ping jobs.example.com` shows that IP.
+2. **Install** only what step 0 showed is missing:
    ```bash
    curl -fsSL https://get.docker.com | sudo sh
    sudo apt install -y nginx certbot python3-certbot-nginx
-   sudo ufw allow OpenSSH && sudo ufw allow 'Nginx Full' && sudo ufw enable
+   sudo ufw status   # if active, make sure OpenSSH and 'Nginx Full' are allowed
    ```
-3. **App**: copy the `dashboard` folder to the server (`git clone`, or `scp -r dashboard user@IP:~/`), then:
+3. **App**: copy the **whole repo** to the server (the build also uses `extension/`), e.g. `git clone` or `scp -r job user@IP:~/`, then:
    ```bash
-   cd ~/dashboard
-   cp .env.example .env && nano .env   # set NEXT_PUBLIC_APP_URL=https://example.com
+   cd ~/job/dashboard
+   cp .env.example .env && nano .env   # MONGODB_URI, secrets, NEXT_PUBLIC_APP_URL=https://jobs.example.com
    sudo docker compose up -d --build
    curl -I http://127.0.0.1:3000/login   # should return 200
    ```
-   The compose file binds port 3000 to localhost only, so the app is reachable only through Nginx.
+   The compose file binds the port to localhost only, so the app is reachable only through Nginx.
    In MongoDB Atlas > Network Access, allow the VPS IP.
-4. **Nginx**:
+4. **Nginx** (adds a new site file; the existing site's config is not touched):
    ```bash
    sudo cp nginx.conf /etc/nginx/sites-available/job-outreach
-   sudo sed -i 's/example.com/YOUR_DOMAIN/' /etc/nginx/sites-available/job-outreach
+   sudo sed -i 's/example.com/jobs.example.com/' /etc/nginx/sites-available/job-outreach
    sudo ln -s /etc/nginx/sites-available/job-outreach /etc/nginx/sites-enabled/
-   sudo rm -f /etc/nginx/sites-enabled/default
    sudo nginx -t && sudo systemctl reload nginx
    ```
+   Only `nginx -t` passing means it's safe to reload; if it fails, nothing changes for the existing site. Do not delete `sites-enabled/default` unless you know the other site doesn't use it.
 5. **SSL** (free Let's Encrypt cert; adds the HTTPS block and the HTTP-to-HTTPS redirect, auto-renews):
    ```bash
-   sudo certbot --nginx -d YOUR_DOMAIN --redirect -m you@example.com --agree-tos
+   # -d with ONLY this app's domain, so the other site's cert is untouched
+   sudo certbot --nginx -d jobs.example.com --redirect -m you@example.com --agree-tos
    sudo certbot renew --dry-run
    ```
-6. **Extension**: set Dashboard URL to `https://YOUR_DOMAIN` in the popup (or `config.json`).
+6. **Extension**: set Dashboard URL to `https://jobs.example.com` in the popup (or `config.json`).
 
-Update later: `git pull && sudo docker compose up -d --build`.
+Update later: `cd ~/job && git pull && cd dashboard && sudo docker compose up -d --build`.
 
 Images are built from one multi-stage `Dockerfile`: `--target web` gives the Next.js standalone server, `--target worker` gives the sender. On Render or Railway, create a Web Service and a Background Worker from the same repo with those two targets. The web image also needs the `extension/` folder (compose passes it as an extra build context); with plain `docker build` add `--build-context extension=../extension`, or set `EXTENSION_DIR` to wherever the extension files live.
 

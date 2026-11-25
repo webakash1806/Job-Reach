@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { ACCESS_COOKIE, verifyAccess } from "@/lib/session";
+import { ACCESS_COOKIE, redirectTo, verifyAccess } from "@/lib/session";
 
 // Reachable without an access token. /api/auth/* includes refresh and logout,
 // which authenticate with the refresh cookie (only ever sent to /api/auth).
@@ -17,14 +17,11 @@ export async function middleware(req: NextRequest) {
     if (pathname.startsWith("/api/") && !isNavigation)
       return NextResponse.json({ error: "Not signed in", code: "token_expired" }, { status: 401 });
     // Pages: swap the refresh token for a new access token, then come back here
-    const url = req.nextUrl.clone();
-    url.pathname = "/api/auth/refresh";
-    url.search = `?next=${encodeURIComponent(pathname + search)}`;
-    return NextResponse.redirect(url);
+    return redirectTo(`/api/auth/refresh?next=${encodeURIComponent(pathname + search)}`);
   }
   if ((pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) && access.role !== "admin") {
     if (pathname.startsWith("/api/")) return NextResponse.json({ error: "Admin only" }, { status: 403 });
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    return redirectTo("/dashboard");
   }
   return NextResponse.next();
 }

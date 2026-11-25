@@ -10,6 +10,9 @@ services:
         extension: ../extension
     image: job-outreach-web
     env_file: .env
+    environment:
+      # PORT in .env is the HOST port only; the app always listens on 3000 inside
+      PORT: "3000"
     ports:
       # localhost only: Nginx is the public entry point (Docker ports bypass ufw)
       - "127.0.0.1:${PORT:-3000}:3000"

@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { connectDB } from "@/lib/db";
-import { REFRESH_COOKIE } from "@/lib/session";
+import { REFRESH_COOKIE, redirectTo } from "@/lib/session";
 import { clearAuthCookies, rotateRefresh, setAuthCookies } from "@/lib/tokens";
 
 /** Only allow redirects back into this app. */
@@ -31,13 +31,11 @@ export async function GET(req: NextRequest) {
   const next = safeNext(req.nextUrl.searchParams.get("next"));
   const r = await refresh(req);
   if (!r.ok) {
-    const login = new URL("/login", req.url);
-    if (next !== "/dashboard") login.searchParams.set("next", next);
-    const res = NextResponse.redirect(login);
+    const res = redirectTo(next !== "/dashboard" ? `/login?next=${encodeURIComponent(next)}` : "/login");
     clearAuthCookies(res);
     return res;
   }
-  const res = NextResponse.redirect(new URL(next, req.url));
+  const res = redirectTo(next);
   setAuthCookies(res, r.access, r.refresh);
   return res;
 }
