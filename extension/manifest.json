@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LinkedIn Email Collector",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Finds recruiter emails in LinkedIn posts by keyword and date, skips posts with excluded words, and saves them to your Job Outreach dashboard.",
   "permissions": [
     "storage",

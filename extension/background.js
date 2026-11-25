@@ -6,8 +6,9 @@ chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => 
 const DATE_PARAM = { "past-24h": "past-24h", "past-week": "past-week", "past-month": "past-month" };
 
 function searchUrl(keyword, timeline) {
-  const p = new URLSearchParams({ keywords: keyword, origin: "FACETED_SEARCH", sortBy: '"date_posted"' });
-  if (DATE_PARAM[timeline]) p.set("datePosted", `"${DATE_PARAM[timeline]}"`);
+  // LinkedIn's filter values are JSON lists, e.g. datePosted=["past-week"] (checked Nov 2026)
+  const p = new URLSearchParams({ keywords: keyword, origin: "FACETED_SEARCH", sortBy: '["date_posted"]' });
+  if (DATE_PARAM[timeline]) p.set("datePosted", `["${DATE_PARAM[timeline]}"]`);
   return `https://www.linkedin.com/search/results/content/?${p.toString()}`;
 }
 

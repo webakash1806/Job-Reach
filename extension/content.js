@@ -39,7 +39,10 @@
   }
 
   // ---------- DOM ----------
+  // First match wins. LinkedIn's 2026 layout (obfuscated classes) comes first; older layouts follow.
   const POST_SELECTORS = [
+    "[role='listitem'][componentkey*='update-card']",
+    "main [role='listitem']",
     "div.feed-shared-update-v2",
     "div[data-urn*='urn:li:activity']",
     "div[data-id*='urn:li:activity']",
@@ -56,6 +59,8 @@
   }
 
   async function expand(post) {
+    // new layout: full text is already in the DOM, "… more" only lifts a CSS clamp
+    if (post.querySelector("[data-testid='expandable-text-box']")) return;
     const btns = post.querySelectorAll("button, span[role='button']");
     for (const b of btns) {
       const t = (b.innerText || b.getAttribute("aria-label") || "").trim().toLowerCase();
@@ -69,24 +74,46 @@
 
   function postText(post) {
     const el =
+      post.querySelector("[data-testid='expandable-text-box']") ||
       post.querySelector(".update-components-text") ||
       post.querySelector(".feed-shared-inline-show-more-text") ||
       post.querySelector(".feed-shared-text") ||
       post;
-    return (el.innerText || "").trim();
+    // mailto: links hold emails even where the visible text is shortened
+    const mailtos = [...post.querySelectorAll("a[href^='mailto:']")].map((a) => a.getAttribute("href").slice(7).split("?")[0]);
+    return [(el.innerText || "").trim(), ...mailtos].join("\n");
+  }
+
+  // new layout: post text reads "Name\n• 2nd\nHeadline\n3w •\nFollow\n..."
+  function actorLines(post) {
+    // the first profile link is the avatar (no text); the next one holds "Name • 2nd"
+    const link = [...post.querySelectorAll("a[href*='/in/'], a[href*='/company/']")].find((a) => a.innerText.trim());
+    const name = (link?.innerText || "").split("•")[0].trim();
+    if (!name) return { name: "", sub: "" };
+    const lines = (post.innerText || "").split("\n").map((l) => l.trim()).filter(Boolean);
+    const i = lines.indexOf(name);
+    const sub = i < 0 ? "" : lines.slice(i + 1, i + 4).find((l) => !l.startsWith("•") && !/^\d+[smhdwy]o?\b/.test(l) && l !== "Follow") || "";
+    return { name, sub };
   }
 
   function postMeta(post) {
+    const actor = actorLines(post);
     const name =
       post.querySelector(".update-components-actor__title span[aria-hidden='true']")?.innerText ||
       post.querySelector(".update-components-actor__name")?.innerText ||
-      post.querySelector("a[href*='/in/'] span[aria-hidden='true']")?.innerText ||
+      actor.name ||
       "";
-    const sub = post.querySelector(".update-components-actor__description span[aria-hidden='true']")?.innerText || "";
-    const company = (sub.match(/\bat\s+([^|•,]+)/i)?.[1] || "").trim();
+    const sub = post.querySelector(".update-components-actor__description span[aria-hidden='true']")?.innerText || actor.sub;
+    const company = (sub.match(/(?:\bat\s|@)\s*([^|•,]+)/i)?.[1] || "").trim();
     const urn = post.getAttribute("data-urn") || post.getAttribute("data-id") || post.querySelector("[data-urn*='activity']")?.getAttribute("data-urn") || "";
     const postUrl = urn.includes("activity") ? `https://www.linkedin.com/feed/update/${urn}/` : location.href;
     return { name: name.split("\n")[0].trim().slice(0, 120), company: company.slice(0, 120), postUrl };
+  }
+
+  function scroller() {
+    const main = document.querySelector("main");
+    if (main && main.scrollHeight > main.clientHeight + 10 && /(auto|scroll)/.test(getComputedStyle(main).overflowY)) return main;
+    return window;
   }
 
   function clickShowMoreResults() {
@@ -154,10 +181,13 @@
         return;
       }
 
-      // scroll like a person: jump to the last post, then a bit further
+      // scroll like a person: jump to the last post, then a bit further.
+      // The new layout scrolls inside <main>, not the window, so scroll whichever one actually scrolls.
+      // Jump instantly first: a smooth scrollIntoView is cancelled by the smooth scrollBy right after it.
       const last = findPosts().at(-1);
-      if (last) last.scrollIntoView({ behavior: "smooth", block: "end" });
-      window.scrollBy({ top: 400 + Math.random() * 500, behavior: "smooth" });
+      if (last) last.scrollIntoView({ block: "end" });
+      await sleep(300);
+      scroller().scrollBy({ top: 400 + Math.random() * 500, behavior: "smooth" });
       if (idle >= 2) clickShowMoreResults();
       await sleep(jitter(delay));
     }
