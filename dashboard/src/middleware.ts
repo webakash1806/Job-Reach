@@ -17,11 +17,11 @@ export async function middleware(req: NextRequest) {
     if (pathname.startsWith("/api/") && !isNavigation)
       return NextResponse.json({ error: "Not signed in", code: "token_expired" }, { status: 401 });
     // Pages: swap the refresh token for a new access token, then come back here
-    return redirectTo(`/api/auth/refresh?next=${encodeURIComponent(pathname + search)}`);
+    return redirectTo(req, `/api/auth/refresh?next=${encodeURIComponent(pathname + search)}`);
   }
   if ((pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) && access.role !== "admin") {
     if (pathname.startsWith("/api/")) return NextResponse.json({ error: "Admin only" }, { status: 403 });
-    return redirectTo("/dashboard");
+    return redirectTo(req, "/dashboard");
   }
   return NextResponse.next();
 }

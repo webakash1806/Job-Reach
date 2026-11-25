@@ -31,11 +31,11 @@ export async function GET(req: NextRequest) {
   const next = safeNext(req.nextUrl.searchParams.get("next"));
   const r = await refresh(req);
   if (!r.ok) {
-    const res = redirectTo(next !== "/dashboard" ? `/login?next=${encodeURIComponent(next)}` : "/login");
+    const res = redirectTo(req, next !== "/dashboard" ? `/login?next=${encodeURIComponent(next)}` : "/login");
     clearAuthCookies(res);
     return res;
   }
-  const res = redirectTo(next);
+  const res = redirectTo(req, next);
   setAuthCookies(res, r.access, r.refresh);
   return res;
 }

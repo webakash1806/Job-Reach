@@ -2,15 +2,8 @@ import { NextResponse } from "next/server";
 import { handler, requireUser } from "@/lib/auth";
 import { newApiKey } from "@/lib/crypto";
 import { buildExtensionZip, extensionVersion } from "@/lib/extension-pack";
-
-/** The URL the user is actually using, so the extension calls back to the same place. */
-function publicOrigin(req: Request) {
-  const h = req.headers;
-  const host = h.get("x-forwarded-host") || h.get("host");
-  const proto = h.get("x-forwarded-proto") || new URL(req.url).protocol.replace(":", "");
-  if (host) return `${proto}://${host}`;
-  return (process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin).replace(/\/+$/, "");
-}
+// the extension calls back to the URL the user is actually using
+import { publicOrigin } from "@/lib/session";
 
 // GET /api/extension            -> status for the setup page
 // GET /api/extension?download=1 -> personalised zip (contains this user's API key)

@@ -44,11 +44,20 @@ export async function verifyAccess(token?: string): Promise<AccessPayload | null
   }
 }
 
+/** The URL the user is actually using (Nginx forwards Host and X-Forwarded-Proto). */
+export function publicOrigin(req: Request) {
+  const h = req.headers;
+  const host = h.get("x-forwarded-host") || h.get("host");
+  const proto = h.get("x-forwarded-proto") || new URL(req.url).protocol.replace(":", "");
+  if (host) return `${proto}://${host}`;
+  return (process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin).replace(/\/+$/, "");
+}
+
 /**
- * Same-origin redirect with a relative Location header. Behind Nginx the standalone
- * server sees its own bind address (0.0.0.0:3000) as the origin, so absolute
- * redirects built from req.url would send the browser there.
+ * Same-origin redirect. Behind Nginx the standalone server sees its bind address
+ * (0.0.0.0:3000) in req.url, so the target is built from the forwarded Host instead.
+ * Middleware rejects relative Location headers, so it has to be absolute.
  */
-export function redirectTo(path: string) {
-  return new NextResponse(null, { status: 307, headers: { Location: path } });
+export function redirectTo(req: Request, path: string) {
+  return NextResponse.redirect(new URL(path, publicOrigin(req)));
 }
