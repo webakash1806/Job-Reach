@@ -54,6 +54,12 @@ async function checkConnection() {
   return !!r?.ok;
 }
 
+$("openDashboard").addEventListener("click", async () => {
+  const { settings = {} } = await chrome.storage.local.get("settings");
+  if (!settings.dashboardUrl) return document.querySelector('.tabs button[data-tab="setup"]').click();
+  chrome.tabs.create({ url: settings.dashboardUrl.replace(/\/+$/, "") + "/dashboard" });
+});
+
 // ---------- run ----------
 $("start").addEventListener("click", async () => {
   const s = await saveSettings();

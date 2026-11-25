@@ -1,5 +1,8 @@
 // Service worker: runs the search queue, stores found emails and syncs them to the dashboard.
 
+// Toolbar icon opens the UI as a side panel (stays open while the LinkedIn tab works), not a popup.
+chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {});
+
 const DATE_PARAM = { "past-24h": "past-24h", "past-week": "past-week", "past-month": "past-month" };
 
 function searchUrl(keyword, timeline) {
@@ -109,7 +112,11 @@ async function finish(status) {
 chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
   if (info.status !== "complete") return;
   const run = await getRun();
-  if (!run.active || run.tabId !== tabId || !tab.url?.includes("linkedin.com/search/results/content")) return;
+  if (!run.active || run.tabId !== tabId) return;
+  if (!tab.url?.includes("linkedin.com/search/results/content")) {
+    // LinkedIn sent us elsewhere (sign-in page, checkpoint, new search URL): say so instead of waiting forever
+    return setRun({ status: `Waiting: LinkedIn opened ${tab.url?.split("?")[0] || "another page"} instead of post search results. Sign in to LinkedIn, then press Start again.` });
+  }
   const { settings } = await chrome.storage.local.get("settings");
   try {
     await chrome.scripting.executeScript({ target: { tabId }, files: ["content.js"] });
