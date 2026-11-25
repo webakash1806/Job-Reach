@@ -33,6 +33,15 @@ async function applyBundledConfig() {
 }
 chrome.runtime.onInstalled.addListener(applyBundledConfig);
 
+// A run can't survive Chrome restarting or the extension reloading (its tab is gone),
+// but its "active" flag would stay set and hide the Start button. Clear it.
+async function clearStaleRun() {
+  const { run } = await chrome.storage.local.get("run");
+  if (run?.active) await chrome.storage.local.set({ run: { ...run, active: false, status: "Previous run was interrupted. Press Start to run again." } });
+}
+chrome.runtime.onStartup.addListener(clearStaleRun);
+chrome.runtime.onInstalled.addListener(clearStaleRun);
+
 async function getRun() {
   const { run } = await chrome.storage.local.get("run");
   return run || { active: false };
