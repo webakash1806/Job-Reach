@@ -1,0 +1,26 @@
+# docker compose up -d --build
+# Both services read their settings from .env (copy .env.example to .env first).
+services:
+  web:
+    build:
+      context: .
+      target: web
+      # the extension source is served as a personalised zip from /extension
+      additional_contexts:
+        extension: ../extension
+    image: job-outreach-web
+    env_file: .env
+    ports:
+      # localhost only: Nginx is the public entry point (Docker ports bypass ufw)
+      - "127.0.0.1:${PORT:-3000}:3000"
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      target: worker
+    image: job-outreach-worker
+    env_file: .env
+    restart: unless-stopped
+    depends_on:
+      - web

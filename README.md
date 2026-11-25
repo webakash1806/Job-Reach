@@ -137,5 +137,4 @@ While it runs, posts with emails get a green outline and skipped posts a dashed 
 - Gmail allows about 500 emails per day on a normal account. Keep the daily cap well below that and use random gaps.
 - Automated scrolling of LinkedIn goes against LinkedIn's terms. The extension only reads what your logged-in browser shows, at a human pace, but keep runs modest to protect your account.
 - LinkedIn changes its page markup often. If the extension stops finding posts, the selectors are at the top of `extension/content.js` (`POST_SELECTORS`).
-#   J o b - R e a c h  
- 
+# Job-Reach

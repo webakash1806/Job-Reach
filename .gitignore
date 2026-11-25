@@ -1,0 +1,15 @@
+# dependencies and build output
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# secrets: never commit these
+.env
+.env.*
+!.env.example
+extension/config.json
+
+# local tooling
+.claude/settings.local.json
+*.log
