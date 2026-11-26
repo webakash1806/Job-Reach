@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { ArrowLeftIcon, ClockIcon, EyeIcon, EyeOffIcon, Loader2Icon, LockKeyholeIcon, MailCheckIcon } from "lucide-react";
+import { GoogleTagManager } from "@/components/gtm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -49,6 +50,7 @@ export default function LoginPage() {
 
   return (
     <main className="grid min-h-[100dvh] lg:grid-cols-2">
+      <GoogleTagManager />
       {/* form side */}
       <section className="flex flex-col px-6 py-8 sm:px-10">
         <div className="flex items-center justify-between">

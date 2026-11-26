@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { DM_Mono, Inter } from "next/font/google";
+import { GoogleTagManager } from "@/components/gtm";
 import { LandingPage } from "./landing/landing-page";
 import { landingCss } from "./landing/styles";
 
@@ -61,6 +62,7 @@ export default function Home() {
       {/* reads the palette before paint so dark grounds never flash light; it must run in place, not deferred */}
       {/* eslint-disable-next-line @next/next/no-sync-scripts */}
       <script src="/assets/backgrounds/backgrounds.js" />
+      <GoogleTagManager />
       <LandingPage />
       <Script type="module" src="/assets/system.js" strategy="afterInteractive" />
       <Script type="module" src="/assets/motion/motion.js" strategy="afterInteractive" />
