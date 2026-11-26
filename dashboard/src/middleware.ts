@@ -3,11 +3,11 @@ import { ACCESS_COOKIE, redirectTo, verifyAccess } from "@/lib/session";
 
 // Reachable without an access token. /api/auth/* includes refresh and logout,
 // which authenticate with the refresh cookie (only ever sent to /api/auth).
-const PUBLIC = ["/login", "/api/auth/login", "/api/auth/refresh", "/api/auth/logout", "/api/ingest"];
+const PUBLIC = ["/assets", "/login", "/api/auth/login", "/api/auth/refresh", "/api/auth/logout", "/api/ingest"];
 
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
-  if (PUBLIC.some((p) => pathname === p || pathname.startsWith(p + "/"))) return NextResponse.next();
+  if (pathname === "/" || PUBLIC.some((p) => pathname === p || pathname.startsWith(p + "/"))) return NextResponse.next();
 
   const access = await verifyAccess(req.cookies.get(ACCESS_COOKIE)?.value);
   if (!access) {

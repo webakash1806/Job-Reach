@@ -1,9 +1,31 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { handler, HttpError, requireUser } from "@/lib/auth";
-import { EmailJob } from "@/lib/models";
+import { render } from "@/lib/mailer";
+import { Contact, EmailJob, Resume, Template } from "@/lib/models";
 
 type Ctx = { params: Promise<{ id: string }> };
+
+// one email for the reading pane: its body rebuilt from the template and the contact
+export const GET = handler(async (_req: Request, { params }: Ctx) => {
+  const user = await requireUser();
+  const { id } = await params;
+  const job = await EmailJob.findOne({ _id: id, userId: user._id }).lean();
+  if (!job) throw new HttpError(404, "Not found");
+  const [contact, template, resume] = await Promise.all([
+    Contact.findById(job.contactId, "email name company").lean(),
+    Template.findById(job.templateId, "name subject body").lean(),
+    job.resumeId ? Resume.findById(job.resumeId, "filename").lean() : null,
+  ]);
+  const vars = { name: contact?.name, email: contact?.email ?? job.to, company: contact?.company };
+  return NextResponse.json({
+    templateName: template?.name ?? null,
+    resumeFilename: resume?.filename ?? null,
+    subject: job.subject || (template ? render(template.subject || "", vars) : ""),
+    // ponytail: rebuilt from the template as it is now; store the sent body on the job if templates get edited often
+    body: template ? render(template.body, vars) : "",
+  });
+});
 
 // retry a failed job now, or cancel a queued one
 export const POST = handler(async (req: Request, { params }: Ctx) => {

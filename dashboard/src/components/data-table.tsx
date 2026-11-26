@@ -49,6 +49,15 @@ export function SortHeader({ label, column }: { label: string; column: { toggleS
   );
 }
 
+/** The card label for a column: meta.label, a string header, or the column id made readable. */
+function labelOf<T>(def: ColumnDef<T>) {
+  const meta = def.meta as { label?: string } | undefined;
+  if (meta?.label) return meta.label;
+  if (typeof def.header === "string" && def.header) return def.header;
+  const id = def.id ?? ("accessorKey" in def ? String(def.accessorKey) : "");
+  return id.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase().replace(/^./, (c) => c.toUpperCase());
+}
+
 export function DataTable<T extends { _id: string }>({
   columns,
   data,
@@ -91,7 +100,42 @@ export function DataTable<T extends { _id: string }>({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="overflow-hidden rounded-lg border">
+      {/* phones: one card per row, every column as a label and value */}
+      <div className="grid gap-2 @3xl:hidden">
+        {loading ? (
+          Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28 w-full rounded-lg" />)
+        ) : rows.length ? (
+          rows.map((row) => {
+            const cells = row.getVisibleCells();
+            const select = cells.find((c) => c.column.id === "select");
+            const actions = cells.find((c) => c.column.id === "actions");
+            const [title, ...rest] = cells.filter((c) => c !== select && c !== actions);
+            return (
+              <div key={row.id} data-state={row.getIsSelected() ? "selected" : undefined} className="grid gap-3 rounded-lg border bg-card p-3 data-[state=selected]:border-foreground/30 data-[state=selected]:bg-muted/50">
+                <div className="flex items-start gap-3">
+                  {select && <div className="pt-0.5">{flexRender(select.column.columnDef.cell, select.getContext())}</div>}
+                  <div className="min-w-0 flex-1 break-words">{title && flexRender(title.column.columnDef.cell, title.getContext())}</div>
+                </div>
+                {rest.length > 0 && (
+                  <dl className="grid gap-2 text-sm">
+                    {rest.map((c) => (
+                      <div key={c.id} className="grid grid-cols-[96px_minmax(0,1fr)] items-start gap-3">
+                        <dt className="text-xs leading-5 text-muted-foreground">{labelOf(c.column.columnDef)}</dt>
+                        <dd className="min-w-0 break-words">{flexRender(c.column.columnDef.cell, c.getContext())}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+                {actions && <div className="flex flex-wrap gap-2 border-t pt-3 empty:hidden">{flexRender(actions.column.columnDef.cell, actions.getContext())}</div>}
+              </div>
+            );
+          })
+        ) : (
+          <div className="rounded-lg border p-8 text-center text-sm text-muted-foreground">{empty ?? "Nothing here yet."}</div>
+        )}
+      </div>
+
+      <div className="hidden overflow-x-auto rounded-lg border @3xl:block">
         <Table>
           <TableHeader className="bg-muted/50">
             {table.getHeaderGroups().map((hg) => (
@@ -136,7 +180,7 @@ export function DataTable<T extends { _id: string }>({
         </Table>
       </div>
       {!loading && data.length > 0 && (
-        <div className="flex items-center justify-between gap-2 text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-muted-foreground">
           <span>
             {Object.keys(rowSelection).length > 0 ? `${Object.keys(rowSelection).length} selected of ` : ""}
             {data.length} rows

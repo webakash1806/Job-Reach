@@ -3,7 +3,10 @@ import path from "node:path";
 import { zipSync, strToU8 } from "fflate";
 
 // Files that make up the unpacked extension (config.json is generated per user).
-const FILES = ["manifest.json", "background.js", "content.js", "popup.html", "popup.css", "popup.js"];
+const FILES = [
+  "manifest.json", "background.js", "content.js", "popup.html", "popup.css", "popup.js",
+  "icons/icon16.png", "icons/icon32.png", "icons/icon48.png", "icons/icon128.png",
+];
 
 /** Finds the extension source: $EXTENSION_DIR, ./extension (Docker), ../extension (local dev). */
 export async function extensionDir() {

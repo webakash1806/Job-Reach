@@ -25,7 +25,7 @@ type Stats = {
   imap: { enabled: boolean; lastCheck?: string; error?: string };
 };
 
-const chartConfig = { sent: { label: "Sent", color: "oklch(0.62 0.14 163)" } } satisfies ChartConfig;
+const chartConfig = { sent: { label: "Sent", color: "var(--foreground)" } } satisfies ChartConfig;
 
 export default function DashboardPage() {
   const [s, setS] = useState<Stats | null>(null);

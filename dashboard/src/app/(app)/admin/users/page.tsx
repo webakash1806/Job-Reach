@@ -64,7 +64,35 @@ export default function UsersPage() {
           Create user
         </Button>
       </PageHeader>
-      <div className="overflow-hidden rounded-lg border">
+      {/* phones: one card per user */}
+      <div className="grid gap-2 @3xl:hidden">
+        {!rows ? (
+          <p className="text-sm text-muted-foreground">Loading...</p>
+        ) : (
+          rows.map((u) => (
+            <div key={u._id} className="grid gap-3 rounded-lg border bg-card p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="flex flex-wrap items-center gap-2 font-medium"><span className="break-all">{u.email}</span>{u.role === "admin" && <Badge variant="secondary">Admin</Badge>}</p>
+                  {u.name && <p className="text-xs text-muted-foreground">{u.name}</p>}
+                </div>
+                <Switch aria-label={`Account active for ${u.email}`} checked={u.active} disabled={u.role === "admin"} onCheckedChange={(v) => patch(u._id, { active: v }, v ? "Enabled" : "Disabled")} />
+              </div>
+              <dl className="grid grid-cols-3 gap-2 text-xs">
+                <div><dt className="text-muted-foreground">Contacts</dt><dd className="mt-0.5 text-sm font-medium tabular-nums">{u.contacts}</dd></div>
+                <div><dt className="text-muted-foreground">Sent</dt><dd className="mt-0.5 text-sm font-medium tabular-nums">{u.sent}</dd></div>
+                <div><dt className="text-muted-foreground">Signed in</dt><dd className="mt-0.5 text-sm">{u.sessions ? `${u.sessions} device${u.sessions === 1 ? "" : "s"}` : "Signed out"}</dd></div>
+              </dl>
+              <div className="flex flex-wrap gap-2 border-t pt-3">
+                <Button variant="outline" size="sm" onClick={() => setPwFor(u)}><KeyRoundIcon />Reset password</Button>
+                {u.role !== "admin" && u.sessions > 0 && <Button variant="outline" size="sm" onClick={() => patch(u._id, { endSessions: true }, "Signed out")}><LogOutIcon />Sign out</Button>}
+                {u.role !== "admin" && <Button variant="outline" size="sm" onClick={() => setDelFor(u)}><Trash2Icon />Delete</Button>}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      <div className="hidden overflow-x-auto rounded-lg border @3xl:block">
         <Table>
           <TableHeader className="bg-muted/50">
             <TableRow>

@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# design skill checker output (screenshots, browser profile)
+/public/.taste-skill/

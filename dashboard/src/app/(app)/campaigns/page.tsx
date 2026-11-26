@@ -42,7 +42,38 @@ export default function CampaignsPage() {
           </Link>
         </Button>
       </PageHeader>
-      <div className="overflow-hidden rounded-lg border">
+      {/* phones: one card per campaign */}
+      <div className="grid gap-2 @3xl:hidden">
+        {!rows ? (
+          Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-28 w-full rounded-lg" />)
+        ) : rows.length === 0 ? (
+          <div className="rounded-lg border p-6">
+            <EmptyState icon={SendIcon} title="No campaigns yet">Add a template and a CV, then start your first campaign.</EmptyState>
+          </div>
+        ) : (
+          rows.map((r) => {
+            const sent = r.counts.sent ?? 0;
+            const failed = r.counts.failed ?? 0;
+            return (
+              <Link key={r._id} href={`/campaigns/${r._id}`} className="grid gap-3 rounded-lg border bg-card p-4 transition-colors active:bg-muted/50">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate font-medium">{r.name}</p>
+                    <p className="text-xs text-muted-foreground">{r.followUp?.enabled ? "Auto follow-up on · " : ""}{fmtDate(r.createdAt)}</p>
+                  </div>
+                  <StatusBadge status={r.status} />
+                </div>
+                <Progress value={Math.min(100, (sent / (r.total || 1)) * 100)} />
+                <div className="flex justify-between text-xs text-muted-foreground tabular-nums">
+                  <span>{sent} sent{failed ? `, ${failed} failed` : ""} of {r.total}</span>
+                  {r.nextAt && <span>Next {fmtRelative(r.nextAt)}</span>}
+                </div>
+              </Link>
+            );
+          })
+        )}
+      </div>
+      <div className="hidden overflow-x-auto rounded-lg border @3xl:block">
         <Table>
           <TableHeader className="bg-muted/50">
             <TableRow>

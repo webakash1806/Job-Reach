@@ -4,7 +4,6 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  BriefcaseBusinessIcon,
   ContactIcon,
   FileTextIcon,
   LayoutDashboardIcon,
@@ -16,6 +15,7 @@ import {
   Settings2Icon,
   UsersIcon,
 } from "lucide-react";
+import { Mark } from "@/components/brand";
 import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
@@ -69,12 +69,12 @@ export function AppSidebar({ user, ...props }: React.ComponentProps<typeof Sideb
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <BriefcaseBusinessIcon className="size-4" />
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-foreground text-background">
+                  <Mark className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">Job Outreach</span>
-                  <span className="truncate text-xs text-muted-foreground">Email collector</span>
+                  <span className="truncate text-xs text-muted-foreground">Recruiter outreach</span>
                 </div>
               </Link>
             </SidebarMenuButton>

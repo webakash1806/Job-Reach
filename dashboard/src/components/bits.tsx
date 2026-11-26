@@ -1,24 +1,37 @@
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-const STATUS: Record<string, { label: string; className: string }> = {
-  new: { label: "New", className: "bg-secondary text-secondary-foreground" },
-  queued: { label: "Queued", className: "bg-amber-500/15 text-amber-700 dark:text-amber-400" },
-  sent: { label: "Already sent", className: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" },
-  replied: { label: "Replied", className: "bg-emerald-600 text-white dark:bg-emerald-500 dark:text-emerald-950" },
-  bounced: { label: "Bounced", className: "bg-destructive/10 text-destructive" },
-  pending: { label: "Scheduled", className: "bg-amber-500/15 text-amber-700 dark:text-amber-400" },
-  paused: { label: "Paused", className: "bg-secondary text-secondary-foreground" },
-  sending: { label: "Sending", className: "bg-amber-500/15 text-amber-700 dark:text-amber-400" },
-  failed: { label: "Failed", className: "bg-destructive/10 text-destructive" },
-  cancelled: { label: "Cancelled", className: "bg-muted text-muted-foreground" },
-  running: { label: "Running", className: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" },
-  done: { label: "Done", className: "bg-secondary text-secondary-foreground" },
+// One quiet chip for every status, the same as the landing page and the Sent list:
+// strong for things happening now, red for problems, muted for the rest.
+type Tone = "muted" | "strong" | "live" | "bad";
+const STATUS: Record<string, { label: string; tone: Tone }> = {
+  new: { label: "New", tone: "muted" },
+  queued: { label: "Queued", tone: "strong" },
+  sent: { label: "Already sent", tone: "muted" },
+  replied: { label: "Replied", tone: "strong" },
+  bounced: { label: "Bounced", tone: "bad" },
+  pending: { label: "Scheduled", tone: "muted" },
+  paused: { label: "Paused", tone: "muted" },
+  sending: { label: "Sending", tone: "live" },
+  failed: { label: "Failed", tone: "bad" },
+  cancelled: { label: "Cancelled", tone: "muted" },
+  running: { label: "Running", tone: "live" },
+  done: { label: "Done", tone: "muted" },
+};
+const TONE: Record<Tone, string> = {
+  muted: "text-muted-foreground",
+  strong: "border-foreground/30 font-medium text-foreground",
+  live: "border-foreground/30 font-medium text-foreground",
+  bad: "border-destructive/40 text-destructive",
 };
 
 export function StatusBadge({ status }: { status: string }) {
-  const s = STATUS[status] ?? { label: status, className: "" };
-  return <Badge className={cn("font-normal", s.className)}>{s.label}</Badge>;
+  const s = STATUS[status] ?? { label: status, tone: "muted" as Tone };
+  return (
+    <span className={cn("inline-flex h-6 w-fit shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md border px-2 text-xs", TONE[s.tone])}>
+      <span className={cn("size-1.5 rounded-full", s.tone === "live" ? "animate-pulse bg-green-500" : "bg-current opacity-70")} />
+      {s.label}
+    </span>
+  );
 }
 
 export function PageHeader({ title, description, children }: { title: string; description?: string; children?: React.ReactNode }) {
