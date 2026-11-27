@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SecureNote } from "@/components/bits";
 import { api, fmtDate, fmtRelative } from "@/lib/api";
 
 type Sess = { _id: string; userAgent?: string; ip?: string; createdAt: string; lastUsedAt: string; current: boolean };
@@ -142,6 +143,9 @@ export function SecurityPanel() {
               <Input id="pw-confirm" type="password" autoComplete="new-password" minLength={8} required value={pw.confirm} onChange={(e) => setPw({ ...pw, confirm: e.target.value })} />
               {pw.confirm && pw.next !== pw.confirm && <p className="text-xs text-destructive">Passwords do not match.</p>}
             </div>
+            <SecureNote className="md:col-span-3" title="Your password is never stored">
+              Only a bcrypt hash is kept: a one-way lock that cannot be turned back into your password. No one can read it, not even an admin.
+            </SecureNote>
           </CardContent>
           <CardFooter className="border-t">
             <Button type="submit" disabled={busy === "pw"}>

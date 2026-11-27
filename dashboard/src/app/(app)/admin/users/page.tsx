@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { KeyRoundIcon, Loader2Icon, LogOutIcon, PlusIcon, Trash2Icon, UsersIcon } from "lucide-react";
 import { toast } from "sonner";
-import { EmptyState, PageHeader } from "@/components/bits";
+import { EmptyState, PageHeader, SecureNote } from "@/components/bits";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -216,6 +216,9 @@ function CreateUserDialog({ open, onOpenChange, onDone }: { open: boolean; onOpe
             <Input id="u-pass" type="password" autoComplete="new-password" required minLength={8} value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} />
             <p className="text-xs text-muted-foreground">At least 8 characters.</p>
           </div>
+          <SecureNote title="Saved only as a bcrypt hash">
+            A one-way lock: no one can read this password later, you included. Share it with them yourself.
+          </SecureNote>
           <DialogFooter>
             <Button type="submit" disabled={busy}>
               {busy && <Loader2Icon className="animate-spin" />}

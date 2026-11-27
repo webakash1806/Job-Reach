@@ -91,6 +91,10 @@ export default function LoginPage() {
               {loading && <Loader2Icon className="animate-spin" />}
               Sign in
             </Button>
+            <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+              <LockKeyholeIcon className="size-3.5" />
+              Your password is never stored, only a one-way bcrypt hash.
+            </p>
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">

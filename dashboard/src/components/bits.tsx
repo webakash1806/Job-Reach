@@ -1,3 +1,4 @@
+import { ShieldCheckIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // One quiet chip for every status, the same as the landing page and the Sent list:
@@ -54,6 +55,21 @@ export function EmptyState({ icon: Icon, title, children }: { icon: React.Elemen
       </div>
       <p className="font-medium text-foreground">{title}</p>
       {children && <div className="max-w-sm text-sm text-muted-foreground">{children}</div>}
+    </div>
+  );
+}
+
+// A short, plain note next to a field that takes a password: how it is stored.
+export function SecureNote({ title, children, className }: { title: string; children: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn("flex gap-3 rounded-lg border border-emerald-500/25 bg-emerald-500/[0.06] p-3", className)}>
+      <span className="grid size-8 shrink-0 place-items-center rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+        <ShieldCheckIcon className="size-4" />
+      </span>
+      <div className="text-sm">
+        <p className="font-medium">{title}</p>
+        <p className="mt-0.5 text-muted-foreground">{children}</p>
+      </div>
     </div>
   );
 }

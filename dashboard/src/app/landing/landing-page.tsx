@@ -276,22 +276,20 @@ export function LandingPage() {
           <div className="wrap">
             <div className="grid">
               <div className="span-5 stack-6">
-                <h2 id="security-h">Security for your SMTP password and sessions</h2>
-                <p className="t-lead">Your SMTP password is encrypted with AES-256-GCM before it is saved. Sign-in tokens last 15 minutes, and you can see and end every active session.</p>
+                <h2 id="security-h">Your passwords are locked before they are saved</h2>
+                <p className="t-lead">Your Gmail, SMTP and IMAP app passwords are encrypted with AES-256-GCM. Your login password is kept only as a one-way bcrypt hash, so no one can read it, not even an admin.</p>
                 <ul className="stack-3">
+                  <li>Sign-in tokens last 15 minutes; end any session from Settings</li>
                   <li>Mail goes out from your own address</li>
-                  <li>Accounts are made by the admin, no public sign-up</li>
-                  <li>Replies read over IMAP with your own app password</li>
-                </ul>
+                  <li>Accounts are made by the admin, no public sign-up</li>                </ul>
                 <a className="link" href="#faq">Read the questions</a>
               </div>
               <div className="frame frame--split frame--lit span-6 start-7" data-visual="">
                 <div className="sec-panel" aria-hidden="true">
                   <div className="sec-panel__head"><b>Account security</b><span className="sec-pill sec-pill--ok">All on</span></div>
-                  <div className="sec-row"><span className="sec-ico"><svg viewBox="0 0 16 16"><rect x="3.5" y="7" width="9" height="6.5" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg></span><span><b>SMTP password</b><small>AES-256-GCM, stored encrypted</small></span><span className="sec-pill sec-pill--ok">Encrypted</span></div>
-                  <div className="sec-row"><span className="sec-ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5" /><path d="M8 5v3l2 1.5" /></svg></span><span><b>Sign-in token</b><small>Expires after 15 minutes</small></span><span className="sec-pill">Active</span></div>
-                  <div className="sec-row"><span className="sec-ico"><img src="/assets/icons/gmail.svg" alt="" width="16" height="16" /></span><span><b>Reply check</b><small>IMAP, every 10 minutes</small></span><span className="sec-pill">On</span></div>
-                  <div className="sec-panel__label">Active sessions</div>
+                  <div className="sec-row"><span className="sec-ico"><svg viewBox="0 0 16 16"><rect x="3.5" y="7" width="9" height="6.5" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg></span><span><b>SMTP and IMAP passwords</b><small>AES-256-GCM, stored encrypted</small></span><span className="sec-pill sec-pill--ok">Encrypted</span></div>
+                  <div className="sec-row"><span className="sec-ico"><svg viewBox="0 0 16 16"><path d="M8 1.5 13 3.5v4c0 3-2.2 5.6-5 7-2.8-1.4-5-4-5-7v-4z" /><path d="m5.8 8 1.6 1.6 2.8-3" /></svg></span><span><b>Login password</b><small>bcrypt hash, one-way</small></span><span className="sec-pill sec-pill--ok">Hashed</span></div>
+                  <div className="sec-row"><span className="sec-ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5" /><path d="M8 5v3l2 1.5" /></svg></span><span><b>Sign-in token</b><small>Expires after 15 minutes</small></span><span className="sec-pill">Active</span></div>                  <div className="sec-panel__label">Active sessions</div>
                   <div className="sec-row"><span className="sec-ico"><svg viewBox="0 0 16 16"><rect x="2" y="3.5" width="12" height="8" rx="1.2" /><path d="M1 13.5h14" /></svg></span><span><b>Chrome on a laptop</b><small>This device</small></span><span className="sec-pill">Current</span></div>
                   <div className="sec-row"><span className="sec-ico"><svg viewBox="0 0 16 16"><rect x="4.5" y="1.5" width="7" height="13" rx="1.5" /><path d="M7 12.5h2" /></svg></span><span><b>Safari on a phone</b><small>Last seen 2 days ago</small></span><span className="sec-btn">End</span></div>
                 </div>

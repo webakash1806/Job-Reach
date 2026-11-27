@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CopyIcon, Loader2Icon, RefreshCwIcon } from "lucide-react";
 import { toast } from "sonner";
-import { PageHeader } from "@/components/bits";
+import { PageHeader, SecureNote } from "@/components/bits";
 import { SecurityPanel } from "@/components/security-panel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -141,6 +141,9 @@ export default function SettingsPage() {
               />
               <Field id="fromName" label="Sender name" value={s.smtp.fromName} onChange={(e) => setSmtp({ fromName: e.target.value })} placeholder="Your full name" />
               <Field id="fromEmail" label="Sender email (optional)" value={s.smtp.fromEmail} onChange={(e) => setSmtp({ fromEmail: e.target.value })} hint="Defaults to the username" />
+              <SecureNote className="md:col-span-2" title="Your app password is encrypted">
+                It is locked with AES-256-GCM before it is saved, unlocked only for the moment an email is sent, and never shown again, to you or to an admin.
+              </SecureNote>
             </CardContent>
             <CardFooter className="flex flex-wrap items-end gap-3 border-t">
               <Button onClick={saveSmtp} disabled={busy === "smtp"}>
@@ -183,8 +186,11 @@ export default function SettingsPage() {
                 autoComplete="new-password"
                 value={imapPass}
                 onChange={(e) => setImapPass(e.target.value)}
-                hint={s.imap.hasPassword ? "Saved. Leave empty to keep it." : "Leave empty to use the SMTP password"}
+                hint={s.imap.hasPassword ? "Saved and encrypted. Leave empty to keep it." : "Leave empty to use the SMTP password"}
               />
+              <SecureNote className="md:col-span-2" title="Encrypted the same way">
+                Your IMAP password is locked with AES-256-GCM and used only to check your inbox for replies.
+              </SecureNote>
             </CardContent>
             <CardFooter className="flex gap-3 border-t">
               <Button onClick={saveImap} disabled={busy === "imap"}>
