@@ -3,7 +3,8 @@ import { ACCESS_COOKIE, redirectTo, verifyAccess } from "@/lib/session";
 
 // Reachable without an access token. /api/auth/* includes refresh and logout,
 // which authenticate with the refresh cookie (only ever sent to /api/auth).
-const PUBLIC = ["/assets", "/login", "/api/auth/login", "/api/auth/refresh", "/api/auth/logout", "/api/ingest"];
+// /.well-known: nothing is published there, so those paths answer 404 instead of the sign-in redirect.
+const PUBLIC = ["/assets", "/login", "/robots.txt", "/sitemap.xml", "/llms.txt", "/.well-known", "/api/auth/login", "/api/auth/refresh", "/api/auth/logout", "/api/ingest"];
 
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;

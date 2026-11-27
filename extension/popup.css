@@ -4,9 +4,9 @@
   --muted: oklch(0.556 0 0);
   --border: oklch(0.922 0 0);
   --card: oklch(0.985 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: oklch(0.546 0.215 264);
   --primary-fg: oklch(0.985 0 0);
-  --accent: oklch(0.62 0.14 163);
+  --accent: oklch(0.6 0.2 264);
   --danger: oklch(0.577 0.245 27.325);
   --radius: 8px;
   color-scheme: light dark;
@@ -18,8 +18,8 @@
     --muted: oklch(0.708 0 0);
     --border: oklch(1 0 0 / 12%);
     --card: oklch(0.205 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-fg: oklch(0.205 0 0);
+    --primary: oklch(0.6 0.2 264);
+    --primary-fg: oklch(0.985 0 0);
     --danger: oklch(0.704 0.191 22.216);
   }
 }
@@ -68,7 +68,12 @@ button.primary, button.secondary, button.ghost {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   font: inherit; font-weight: 500; padding: 7px 12px; border-radius: var(--radius); cursor: pointer; border: 1px solid transparent;
 }
-button.primary { background: var(--primary); color: var(--primary-fg); flex: 1; }
+/* the brand button: blue gradient, light top edge, soft glow (same as the dashboard) */
+button.primary {
+  background: linear-gradient(180deg, #5a86ff, #2d5cf0); color: #fff; flex: 1; border-color: rgb(255 255 255 / .18);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .3), 0 6px 16px -8px rgb(45 92 240 / .8);
+}
+button.primary:hover { background: linear-gradient(180deg, #6b93ff, #3566f5); }
 button.secondary { background: var(--bg); color: var(--fg); border-color: var(--border); }
 button.ghost { background: transparent; color: var(--muted); }
 button:active { transform: translateY(1px); }

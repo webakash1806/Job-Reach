@@ -18,9 +18,8 @@ var E=['scroll','pointerdown','keydown','pointermove','touchstart'];E.forEach(fu
 var t=function(){setTimeout(go,8000)};if(d.readyState==='complete')t();else w.addEventListener('load',t,{once:true});
 })(window,document,'script','dataLayer','${GTM_ID}');`}
       </Script>
-      <noscript>
-        <iframe src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`} height="0" width="0" style={{ display: "none", visibility: "hidden" }} />
-      </noscript>
+      {/* no <noscript> iframe: with scripts on, the browser keeps its content as text, which React reads as
+          a hydration mismatch (error #418); GA4 cannot track visitors without scripts anyway */}
     </>
   );
 }

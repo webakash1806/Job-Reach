@@ -50,8 +50,7 @@ export const isStill = el => !!(el && el.closest && el.closest('[data-ui-still]'
 const css = new Map();
 function link(href) {
   if (!css.has(href)) {
-    // data-kit-css: the page inlined every kit sheet it uses
-    const done = document.documentElement.hasAttribute('data-kit-css') || [...document.querySelectorAll('link[rel="stylesheet"]')].some(l => l.href === href);
+    const done = [...document.querySelectorAll('link[rel="stylesheet"]')].some(l => l.href === href);
     css.set(href, done ? Promise.resolve() : new Promise(res => {
       const l = document.createElement('link');
       l.rel = 'stylesheet';

@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element -- small SVG icons the kit scripts find by data-icon; next/image adds nothing here */
 import type { CSSProperties } from "react";
+import { HeroMotion } from "./hero-motion";
 import { ThemeToggle } from "./theme-toggle";
 
 // The public home page. Built with the design-taste-frontend skill: hero collage, nav-mega,
@@ -53,48 +54,116 @@ export function LandingPage() {
       </header>
       
       <main id="top">
-        <section className="hero hero--collage" data-enter="" aria-labelledby="hero-h">
-          <div className="wrap"><div className="hero-text grid hero__grid">
-            <div className="hero__text span-5">
-              <p className="hero__badge"><span className="hero__badge-dot" aria-hidden="true"></span>Free · Chrome extension and dashboard</p>
-              <h1 id="hero-h">Recruiter email outreach for job seekers</h1>
-              <p className="hero__lead">Job Outreach finds recruiter emails in LinkedIn hiring posts and sends your CV from your own Gmail, on a schedule, with follow-ups in the same thread.</p>
-              <div className="btn-row"><a className="btn btn--primary" href="/login">Try now<svg className="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path className="m-arrow__stem" d="M1 6h8" /><path className="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5" /></svg></a><a className="btn btn--secondary" href="#how">See the 3 steps</a></div>
-              <p className="hero__proof">Free to use. Checks your inbox for replies every 10 minutes.</p>
-              <p className="hero__works"><span>Works with</span><img src="/assets/icons/linkedin.svg" alt="" width="18" height="18" />LinkedIn<img src="/assets/icons/gmail.svg" alt="" width="18" height="18" />Gmail<span>and any SMTP account</span></p>
-            </div>
-            <div className="hero__art span-6 start-7" data-fx="silk-folds" data-fx-seed="14" role="img" aria-label="The Job Outreach contacts list with recruiters found on LinkedIn, and a campaign that has started sending">
-              <div className="ly-piece ly-piece--main d-win" aria-hidden="true">
-                <div className="d-win__bar"><span className="d-win__dots"><i></i><i></i><i></i></span><span>Job Outreach · Contacts</span></div>
-                <div className="d-win__body">
-                  <div className="d-side">
-                    <span><i></i>Dashboard</span><span className="is-on"><i></i>Contacts</span><span><i></i>Campaigns</span><span><i></i>Sent</span><span><i></i>Follow-ups</span>
-                    <span className="d-side__label">Library</span><span><i></i>Templates</span><span><i></i>Resumes</span>
-                  </div>
-                  <div className="d-main">
-                    <div className="d-main__head"><h4>Contacts</h4><span className="d-btn">Email 12</span></div>
-                    <div className="d-tabs"><span className="is-on">All 318</span><span>New 142</span><span>Replied 7</span></div>
-                    <div className="d-rows">
-                      <div className="d-row"><span className="d-avatar">MI</span><div><b>Meera Iyer</b><small>Fintrail · React developer post</small></div><span className="num">2d</span><span className="d-chip">New</span></div>
-                      <div className="d-row"><span className="d-avatar">JW</span><div><b>Jonas Weber</b><small>Orbitly · Frontend, remote</small></div><span className="num">2d</span><span className="d-chip">Queued</span></div>
-                      <div className="d-row"><span className="d-avatar">RS</span><div><b>Ritika Sharma</b><small>Cloudnest · Node.js roles</small></div><span className="num">3d</span><span className="d-chip">Sent</span></div>
-                      <div className="d-row"><span className="d-avatar">DO</span><div><b>Daniel Osei</b><small>Paylane · Hiring 4 engineers</small></div><span className="num">4d</span><span className="d-chip d-chip--low">Replied</span></div>
-                      <div className="d-row"><span className="d-avatar">AK</span><div><b>Anna Kowalski</b><small>Brightdesk · Full-stack</small></div><span className="num">5d</span><span className="d-chip">Sent</span></div>
-                      <div className="d-row"><span className="d-avatar">VN</span><div><b>Vikram Nair</b><small>Tessera · TypeScript post</small></div><span className="num">6d</span><span className="d-chip">New</span></div>
+        {/* Staged hero: "SEND" + a "your CV" sticker as the headline, a phone running a campaign on a lime arch,
+            stickers around it, a wavy ribbon at the foot. On wide screens the phone travels down into the next
+            section as you scroll (hero-motion.tsx measures the distance). data-enter="off": its entrance is its
+            own CSS, not the kit's word split. */}
+        <section className="hero hstage" data-enter="off" aria-labelledby="hero-h">
+          <HeroMotion />
+          <div className="hstage__grid" aria-hidden="true"></div>
+          <div className="wrap hstage__wrap">
+            <div className="hstage__stage">
+              <h1 id="hero-h" className="hstage__title">
+                <span className="hstage__word">Send</span>{" "}
+                <span className="hstage__sticker"><span>your CV</span></span>
+              </h1>
+
+              <div className="hs-stick hs-stick--a" aria-hidden="true"><span className="hs-stick__in is-accent"><svg viewBox="0 0 16 16"><path d="M2.5 4.5h11v8h-11z" /><path d="m2.5 5 5.5 4 5.5-4" /></svg>7 replies</span></div>
+              <div className="hs-stick hs-stick--b" aria-hidden="true"><span className="hs-stick__in"><img src="/assets/icons/linkedin.svg" alt="" width="18" height="18" />142 recruiters found</span></div>
+              <div className="hs-stick hs-stick--c" aria-hidden="true"><span className="hs-stick__in"><img src="/assets/icons/gmail.svg" alt="" width="18" height="18" />Sent from your Gmail</span></div>
+
+              <div className="hstage__center" role="img" aria-label="A campaign in the Job Outreach app: 142 recruiters queued, 86 emails sent and 7 replies">
+                {/* the arch behind the phone: the kit's fluted-glass ground, like the step cards */}
+                <div className="hstage__arch" data-fx="fluted-glass" data-fx-seed="31" aria-hidden="true"></div>
+                <div className="hs-fly">
+                  <div className="hs-phone" aria-hidden="true">
+                    <div className="hs-phone__screen">
+                      <div className="hs-phone__status"><span>9:41</span><i className="hs-phone__island"></i><span className="hs-phone__bat"></span></div>
+                      <div className="hs-app__head">
+                        <span className="hs-app__mark"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="4" width="18" height="4" rx="1" /><rect x="3" y="10" width="18" height="4" rx="1" /><rect x="3" y="16" width="18" height="4" rx="1" /></svg></span>
+                        <span><b>React roles</b><small>Campaign · day 2</small></span>
+                        <span className="hs-live"><i></i>Sending</span>
+                      </div>
+                      <div className="hs-stats">
+                        <div><small>Queued</small><b>142</b></div>
+                        <div><small>Sent</small><b className="hs-count">86</b></div>
+                        <div className="is-accent"><small>Replied</small><b>7</b></div>
+                      </div>
+                      <div className="hs-chart">
+                        <div className="hs-chart__head"><small>Sent, last 7 days</small><small className="hs-chart__up">+24 today</small></div>
+                        <svg className="hs-area" viewBox="0 0 240 80" preserveAspectRatio="none">
+                          <path className="hs-area__fill" d="M0 70 L40 60 L80 64 L120 44 L160 48 L200 26 L240 10 L240 80 L0 80 Z" />
+                          <path className="hs-area__line" d="M0 70 L40 60 L80 64 L120 44 L160 48 L200 26 L240 10" />
+                          <circle className="hs-area__dot" cx="240" cy="10" r="4" />
+                        </svg>
+                      </div>
+                      <div className="hs-tiles">
+                        <div className="is-ink"><small>Reply rate</small><b>8.1%</b></div>
+                        <div><small>Follow-ups</small><b>2 queued</b></div>
+                      </div>
+                      <div className="hs-list">
+                        <div className="hs-row"><span className="hs-av">DO</span><span><b>Daniel Osei</b><small>Paylane</small></span><em className="is-accent">Replied</em></div>
+                        <div className="hs-row"><span className="hs-av">RS</span><span><b>Ritika Sharma</b><small>Cloudnest</small></span><em>Sent</em></div>
+                        <div className="hs-row"><span className="hs-av">JW</span><span><b>Jonas Weber</b><small>Orbitly</small></span><em>Queued</em></div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="ly-piece ly-piece--note d-card" aria-hidden="true" data-ly-steps="700">
-                <div className="d-card__row"><h5>Campaign: React roles</h5><span className="d-chip" data-step="" data-step-at="4">Sending</span></div>
-                <div className="d-note__line" data-step=""><i>✓</i><span><b>142 new contacts</b>, 9 already emailed skipped</span></div>
-                <div className="d-note__line" data-step=""><i>✓</i><span>Random gap of <b>2 to 6 minutes</b></span></div>
-                <div className="d-note__line" data-step=""><i>✓</i><span>Follow-up after <b>3 days</b>, up to 2 times</span></div>
+
+              <div className="hs-stick hs-stick--e" aria-hidden="true">
+                <div className="hs-stick__in hs-reply">
+                  <span className="hs-reply__head"><span className="hs-av">DO</span><span><b>Daniel Osei</b><small>Re: Frontend developer · 2h ago</small></span></span>
+                  <span className="hs-reply__text">&ldquo;Thanks for reaching out. Are you free for a call on Thursday?&rdquo;</span>
+                </div>
+              </div>
+
+              <div className="hstage__proof">
+                <span className="hstage__faces" aria-hidden="true"><i>MI</i><i>JW</i><i>RS</i><i>DO</i><i>+</i></span>
+                <p><b>Replies land in your inbox,</b> not on a job portal.</p>
+              </div>
+
+              <div className="hstage__pitch">
+                <p className="hero__lead">Job Outreach finds recruiter emails in LinkedIn hiring posts and sends your CV from your own Gmail, on a schedule, with follow-ups in the same thread.</p>
+                <div className="btn-row"><a className="btn btn--secondary hstage__play" href="#how"><span className="hstage__play-dot" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M4 2.5v7l5.5-3.5z" /></svg></span>See the 3 steps</a><a className="btn btn--primary" href="/login">Try now<svg className="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path className="m-arrow__stem" d="M1 6h8" /><path className="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5" /></svg></a></div>
               </div>
             </div>
-          </div></div>
+          </div>
+
+          {/* the wavy ribbon is the edge between the hero and the next section: one long, gentle wave; below it the
+              next section's colour fills to the bottom, the band runs along the wave and the words along the band */}
+          <svg className="hstage__ribbon" viewBox="0 0 1440 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs><path id="hs-wave" d="M-320 118 C-20 86 260 52 600 58 S1180 150 1760 104" /></defs>
+            <path className="hstage__ribbon-fill" d="M-320 118 C-20 86 260 52 600 58 S1180 150 1760 104 L1760 190 L-320 190 Z" />
+            <use href="#hs-wave" className="hstage__ribbon-band" />
+            <text className="hstage__ribbon-text" dy="10">
+              <textPath href="#hs-wave" startOffset="0">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <tspan key={i}>LINKEDIN POSTS <tspan className="is-star">✱</tspan> <tspan className="is-serif">recruiter emails</tspan> <tspan className="is-star">✱</tspan> YOUR OWN GMAIL <tspan className="is-star">✱</tspan> <tspan className="is-serif">follow-ups</tspan> <tspan className="is-star">✱</tspan> REPLY DETECTION <tspan className="is-star">✱</tspan> <tspan className="is-serif">your CV attached</tspan> <tspan className="is-star">✱</tspan> </tspan>
+                ))}
+                <animate attributeName="startOffset" from="0" to="-1500" dur="26s" repeatCount="indefinite" />
+              </textPath>
+            </text>
+          </svg>
         </section>
-      
+
+        {/* where the phone lands: the problem the visitor already has */}
+        <section className="section pain" aria-labelledby="pain-h">
+          <div className="wrap pain__wrap">
+            <span className="pain__tag">Sound familiar?</span>
+            <h2 id="pain-h" className="pain__title">So many applications, zero <span className="hstage__sticker hstage__sticker--sm"><span>replies</span></span></h2>
+            <p className="pain__lead">Your CV is fine. The way it travels isn&rsquo;t: portals bury it, <b>recruiter emails hide in LinkedIn posts</b>, and nobody follows up. That is what Job Outreach fixes.</p>
+            <div className="pain__stage">
+              <div className="pain__slot" aria-hidden="true"></div>
+              <figure className="pain-card pain-card--a"><blockquote>&ldquo;I apply on portals and never hear back.&rdquo;</blockquote><figcaption>Your CV lands in a pile of hundreds.</figcaption></figure>
+              <figure className="pain-card pain-card--b"><blockquote>&ldquo;Finding recruiter emails takes hours.&rdquo;</blockquote><figcaption>They are buried in LinkedIn posts.</figcaption></figure>
+              <figure className="pain-card pain-card--c"><blockquote>&ldquo;I forget to follow up.&rdquo;</blockquote><figcaption>So the conversation goes cold.</figcaption></figure>
+              <figure className="pain-card pain-card--d"><blockquote>&ldquo;My emails feel copy-pasted.&rdquo;</blockquote><figcaption>No name, no company, no reason to reply.</figcaption></figure>
+              <span className="pain__think" aria-hidden="true"><span>😩</span><i></i><i></i></span>
+            </div>
+          </div>
+        </section>
+
         <section className="section" id="product" aria-labelledby="product-h">
           <div className="wrap">
             <div className="grid">
@@ -264,15 +333,44 @@ export function LandingPage() {
               <h2 id="free-h" className="mo-lt__type">Free, and sent from your inbox</h2>
               <p className="t-lead measure">There is no plan to buy and no card to add. Recruiters see your own address, and their replies land in the inbox you already read.</p>
             </div>
-            <dl className="grid free-facts">
-              <div className="span-4 free-card"><dt>Price</dt><dd><b>$0</b>Every feature, no card to add</dd></div>
-              <div className="span-4 free-card"><dt>Sends from</dt><dd><b>Your inbox</b>Your Gmail or any SMTP account</dd></div>
-              <div className="span-4 free-card"><dt>Daily limit</dt><dd><b>~500</b>Your provider’s own limit on Gmail</dd></div>
-            </dl>
+            <div className="free-bento">
+              <article className="fb fb--price">
+                <span className="fb__tag">Price</span>
+                <div className="fb__price"><b>$0</b><span className="fb__stamp">Free</span></div>
+                <ul className="fb__receipt" aria-label="What Job Outreach costs">
+                  <li><span>Chrome extension</span><span>$0</span></li>
+                  <li><span>Dashboard and campaigns</span><span>$0</span></li>
+                  <li><span>Follow-ups and reply checks</span><span>$0</span></li>
+                  <li className="is-total"><span>Every month</span><span>$0</span></li>
+                </ul>
+                <p className="fb__note">Every feature, no card to add.</p>
+              </article>
+              <article className="fb fb--from">
+                <span className="fb__tag">Sends from</span>
+                <b className="fb__big">Your inbox</b>
+                <div className="fb__mail" aria-hidden="true">
+                  <div className="fb__mail-row"><span>From</span><span className="fb__chip"><img src="/assets/icons/gmail.svg" alt="" width="14" height="14" />you@gmail.com</span></div>
+                  <div className="fb__mail-row"><span>To</span><span className="fb__chip">Priya · Hireloop recruiter</span></div>
+                  <div className="fb__mail-sub">Application for the React role</div>
+                  <div className="fb__reply"><i></i>Priya replied, in your inbox</div>
+                </div>
+                <p className="fb__note">Your Gmail or any SMTP account.</p>
+              </article>
+              <article className="fb fb--limit">
+                <span className="fb__tag">Daily limit</span>
+                <b className="fb__big">~500<small>/day</small></b>
+                <div className="fb__meter" aria-hidden="true">
+                  <span className="fb__cap">Your cap: 60</span>
+                  <div className="fb__bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                  <div className="fb__scale"><span>0</span><span>250</span><span>500</span></div>
+                </div>
+                <p className="fb__note">Gmail&rsquo;s own limit. Each campaign sets a lower daily cap.</p>
+              </article>
+            </div>
           </div>
         </section>
       
-        <section className="section ground-inverse" id="security" aria-labelledby="security-h">
+        <section className="section" id="security" aria-labelledby="security-h">
           <div className="wrap">
             <div className="grid">
               <div className="span-5 stack-6">
@@ -325,6 +423,8 @@ export function LandingPage() {
       <footer className="closing site-foot" id="contact" aria-labelledby="close-h">
         <div className="wrap">
           <div className="cta-panel">
+            {/* the fluted-glass ground of the step cards, turned diagonal; it fades out behind the words */}
+            <div className="cta-panel__glass" aria-hidden="true"><div className="cta-panel__flutes" data-fx="fluted-glass" data-fx-seed="58"></div></div>
             <div className="cta-panel__text">
               <h2 id="close-h">Send your first campaign today</h2>
               <p className="t-lead muted">Free. Sign in with the account your admin made for you, add your CV and start sending.</p>
@@ -350,9 +450,11 @@ export function LandingPage() {
           <div className="site-foot__legal">
             <span>&copy; 2026 Job Outreach</span>
             <span>Product names and logos are trademarks of their owners</span>
-            <a href="#top">Back to top ↑</a>
+            <a className="site-foot__top" href="#top">Back to top <i aria-hidden="true">↑</i></a>
           </div>
         </div>
+        {/* the wordmark, cut by the bottom edge, with the blue sticker word as in the hero */}
+        <div className="site-foot__mega" aria-hidden="true"><span className="hstage__sticker"><span>job</span></span>Outreach</div>
       </footer>
     </>
   );

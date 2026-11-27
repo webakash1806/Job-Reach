@@ -69,7 +69,7 @@ export function AppSidebar({ user, ...props }: React.ComponentProps<typeof Sideb
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-foreground text-background">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-linear-to-b from-[#5a86ff] to-[#2d5cf0] text-white shadow-[inset_0_1px_0_rgb(255_255_255/.3),0_6px_16px_-8px_rgb(45_92_240/.8)]">
                   <Mark className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -88,7 +88,13 @@ export function AppSidebar({ user, ...props }: React.ComponentProps<typeof Sideb
             <SidebarMenu>
               {g.items.map((item) => (
                 <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild tooltip={item.title} isActive={isActive(item.url)}>
+                  {/* the current page: a blue icon and a slim blue marker */}
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    isActive={isActive(item.url)}
+                    className="relative data-[active=true]:[&>svg]:text-primary data-[active=true]:before:absolute data-[active=true]:before:inset-y-2 data-[active=true]:before:left-0 data-[active=true]:before:w-[3px] data-[active=true]:before:rounded-full data-[active=true]:before:bg-primary data-[active=true]:before:content-['']"
+                  >
                     <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
