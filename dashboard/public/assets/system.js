@@ -468,7 +468,8 @@ async function visuals() {
     if (el.dataset.fxParams && !el.dataset.glowParams) el.dataset.glowParams = el.dataset.fxParams;
     el.removeAttribute('data-fx');
   });
-  const grounds = [...document.querySelectorAll('[data-fx]')];
+  // a phone keeps the CSS grounds: WebGL there cost seconds of main thread to draw stills
+  const grounds = window.matchMedia('(max-width: 639px)').matches ? [] : [...document.querySelectorAll('[data-fx]')];
   const glows = [...document.querySelectorAll('[data-glow]')];
   const frags = [...document.querySelectorAll('[data-ui-load], [data-ui]')].filter(el => !el.parentElement?.closest('[data-ui-load]'));
   if (!grounds.length && !frags.length && !glows.length) return;
@@ -592,11 +593,16 @@ function init() {
   // a bar that could not be wired stays shown, as without script, and the hero pads for it again
   try { actionbar(); } catch (e) { console.warn('system.js: actionbar', e); const b = document.querySelector('body > nav.actionbar'); if (b) { b.dataset.bar = 'always'; b.inert = false; } }
   try { pictures(); } catch (e) { console.warn('system.js: pictures', e); }
-  try { guards(); } catch (e) { console.warn('system.js: guards', e); }
-  Promise.all([
+  // a phone shows the moment's finished state (its CSS, no script). The panels and effects wait for load
+  // and an idle moment, so they never hold the first paint.
+  const phone = window.matchMedia('(max-width: 639px)').matches;
+  const heavy = () => Promise.all([
     visuals().catch(e => console.warn('system.js: visuals', e)),
-    moments().catch(e => console.warn('system.js: moments', e)),
+    phone ? null : moments().catch(e => console.warn('system.js: moments', e)),
   ]).finally(() => { document.documentElement.dataset.ready = '1'; });
+  const idle = window.requestIdleCallback || (f => setTimeout(f, 200));
+  const later = () => idle(heavy, { timeout: 2000 });
+  if (document.readyState === 'complete') later(); else window.addEventListener('load', later, { once: true });
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
 else init();

@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { ArrowLeftIcon, ClockIcon, EyeIcon, EyeOffIcon, Loader2Icon, LockKeyholeIcon, MailCheckIcon } from "lucide-react";
+import "../globals.css";
 import { GoogleTagManager } from "@/components/gtm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
