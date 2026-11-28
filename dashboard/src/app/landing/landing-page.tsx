@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- small SVG icons the kit scripts find by data-icon; next/image adds nothing here */
 import type { CSSProperties } from "react";
 import { HeroMotion } from "./hero-motion";
+import { SmoothScroll } from "./smooth-scroll";
 import { ThemeToggle } from "./theme-toggle";
 
 // The public home page. Built with the design-taste-frontend skill: hero collage, nav-mega,
@@ -60,6 +61,7 @@ export function LandingPage() {
             own CSS, not the kit's word split. */}
         <section className="hero hstage" data-enter="off" aria-labelledby="hero-h">
           <HeroMotion />
+          <SmoothScroll />
           <div className="hstage__grid" aria-hidden="true"></div>
           <div className="wrap hstage__wrap">
             <div className="hstage__stage">
